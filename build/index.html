@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>create a weathe app</title>
+  </head>
+  <body>
+    <header class="body bg-gradient-to-b from-green-200 to-blue-400">
+      <div
+        class=" search mx-auto h-full w-full  flex gap-3 md:py-10 py-4 justify-center items-center "
+      >
+        <input
+          class="h-12 md:w-[400px] font-semibold w-[300px] p-2 text-gray-800 focus:outline-none hover:ring-1 ring-gray-400 rounded-full  hover:outline-none "
+          type="search"
+          placeholder="enter your city"
+        />
+        <button
+          class="bg-white h-12 w-12 flex justify-center items-center rounded-full "
+        >
+          <img
+            class=" p-2 mt-1 h-[50px] w-[50px] rounded-full "
+            src="image/search.png"
+          />
+        </button>
+      </div>
+      <div class="error justify-center hidden  ">
+        <h1 class="text-3xl m-auto text-center text-red-500 ">
+          weather not found
+        </h1>
+      </div>
+      <div class=" flex justify-center flex-col items-center  pb-10 ">
+        <img class=" icon h-[100px] w-[100px]" src="image/rain.png" alt="" />
+        <p class=" weather  text-3xl font-bold text-white">220C</p>
+        <h1 class=" city mt-1 text-3xl font-semibold text-white">
+          New York
+        </h1>
+      </div>
+      <div
+        class="flex  justify-center py-7 md:gap-[100px] gap-4 items-center w-full pb-10 pl-6 pr-1  "
+      >
+        <div class="flex gap-2 ">
+          <img class="h-[60px] w-[60px]" src="image/humidity.png" alt="" />
+          <ul>
+            <p class=" humanity text-2xl font-semibold text-white">50%</p>
+            <li class=" text-xl font-semibold text-white">humanity</li>
+          </ul>
+        </div>
+        <div class="flex gap-2 ">
+          <img class="h-[60px] w-[60px]" src="image/wind.png" alt="" />
+          <ul>
+            <p class=" speed text-2xl font-semibold text-white">15 km/hr</p>
+            <li class="text-xl font-semibold text-white">wind speed</li>
+          </ul>
+        </div>
+      </div>
+    </header>
+    <script>
+      const apiurl =
+        "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+      const apikey = "a511af78f57a3b67a7818208ba4fa7d6";
+      const searchinput = document.querySelector(".search input");
+      const searchbtn = document.querySelector(".search button");
+      const weathericon = document.querySelector(".icon");
+
+      async function fetchdata(city) {
+        const response = await fetch(apiurl + city + `&appid=${apikey}`);
+
+        if (response.status !== 200) {
+          document.querySelector(".error").style.display = "block";
+          document.querySelector(".weather").style.display = "none";
+        } else {
+          const data = await response.json();
+          document.querySelector(".city").innerHTML = data.name;
+          document.querySelector(".weather").innerHTML =
+            Math.round(data.main.temp) + " 0c";
+          document.querySelector(".humanity").innerHTML =
+            data.main.humidity + "%";
+          document.querySelector(".speed").innerHTML =
+            data.wind.speed + "/km/hr";
+          if (data.weather[0].main == "Clear") {
+            weathericon.src = "image/clear.png";
+          } else if (data.weather[0].main == "Clouds") {
+            weathericon.src = "image/clouds.png";
+          } else if (data.weather[0].main == "Rain") {
+            weathericon.src = "image/rain.png";
+          } else if (data.weather[0].main == "Drizzle") {
+            weathericon.src = "image/drizzle.png";
+          } else if (data.weather[0].main == "Mist") {
+            weathericon.src = "image/mist.png";
+          } else if (data.weather[0].main == "Snow") {
+            weathericon.src = "image/snow.png";
+          }
+          document.querySelector(".weather").style.display = "block";
+        }
+      }
+
+      searchbtn.addEventListener("click", () => {
+        return fetchdata(searchinput.value);
+      });
+    </script>
+  </body>
+</html>
